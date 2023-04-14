@@ -17,9 +17,40 @@ imageCredentials:
 nameOverride: ""
 fullNameOverride: ""
 
+ports:
+  containerPort: 12000
+  sourcePort: 80
+
 # Environment Variables
 env:
   ADMIN_PORTAL_URL: ""
+  BLOB_ACCOUNT_KEY: ""
+  BLOB_ACCOUNT_NAME: ""
+  AWS_REGION: ""
+  BOOTSTRAP_ON_PREMISE_WORKSPACE_ADMIN: ""
+  BOOTSTRAP_ON_PREMISE_WORKSPACE_DOMAIN: ""
+  BOOTSTRAP_ON_PREMISE_WORKSPACE_LICENSE: ""
+  BOOTSTRAP_ON_PREMISE_WORKSPACE_NAME: ""
+  DB_ENCRYPT: ""
+  DB_HOST: ""
+  DB_NAME: ""
+  DB_PASS: ""
+  DB_PORT: ""
+  DB_SCHEMA: ""
+  DB_USER: ""
+  FROM_EMAIL_ADDRESS: ""
+  O365_APP_CLIENT_ID: ""
+  O365_APP_SECRET_ID: ""
+  O365_APP_TENANT_ID: ""
+  PORT: ""
+  REDIS_HOST: ""
+  REDIS_PASSWORD: ""
+  REDIS_PORT: ""
+  REDIS_TLS_ENABLED: ""
+  SMTP_API_KEY: ""
+  SMTP_HOST: ""
+  SMTP_PORT: ""
+  SMTP_USERNAME: ""
 
 resources:
   # We usually recommend not to specify default resources and to leave this as a conscious

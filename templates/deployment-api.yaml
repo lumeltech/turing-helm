@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "inforiver.name" . }}-api
+  namespace: {{ include "inforiver.name" . }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "inforiver.name" . }}-app
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: {{ include "inforiver.name" . }}-app
+    spec:
+      containers:
+      - env:
+        - name: ADMIN_PORTAL_URL
+          value: {{ .Values.env.ADMIN_PORTAL_URL }}
+        - name: CLOUD_SERVICE_PROVIDER
+          value: aws
+        - name: BLOB_ACCOUNT_KEY
+          value: {{ .Values.env.BLOB_ACCOUNT_KEY }}
+        - name: BLOB_ACCOUNT_NAME
+          value: {{ .Values.env.BLOB_ACCOUNT_NAME }}
+        - name: AWS_REGION
+          value: {{ .Values.env.AWS_REGION }}
+        - name: BLOB_CONTAINER_NAME
+          value: inforiver
+        - name: BLOB_CUSTOM_COLUMN_CONTAINER_NAME
+          value: inforiver-custom-column
+        - name: BLOB_WRITEBACK_DATA_CONTAINER_NAME
+          value: inforiver-writeback-data
+        - name: BLOB_WRITEBACK_JOBMETA_CONTAINER_NAME
+          value: inforiver-writeback-jobmeta
+        - name: BOOTSTRAP_ON_PREMISE
+          value: 'true'
+        - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_ADMIN
+          value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_ADMIN }}
+        - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_DOMAIN
+          value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_DOMAIN }}
+        - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_LICENSE
+          value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_LICENSE }}
+        - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_NAME
+          value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_NAME }}
+        - name: COMMENTWORKER_QUEUE_NAME
+          value: turing:comment-immediate
+        - name: CUSTOM_COLUMN_BULK_UPDATE_LIMIT
+          value: '2000'
+        - name: DB_ENCRYPT
+          value: {{ .Values.env.DB_ENCRYPT }}
+        - name: DB_HOST
+          value: {{ .Values.env.DB_HOST }}
+        - name: DB_NAME
+          value: {{ .Values.env.DB_NAME }}
+        - name: DB_PASS
+          value: {{ .Values.env.DB_PASS }}
+        - name: DB_PORT
+          value: "{{ .Values.env.DB_PORT }}"
+        - name: DB_SCHEMA
+          value: {{ .Values.env.DB_SCHEMA }}
+        - name: DB_TYPE
+          value: mssql
+        - name: DB_USER
+          value: {{ .Values.env.DB_USER }}
+        - name: ENABLE_AUDIT
+          value: '1'
+        - name: FROM_EMAIL_ADDRESS
+          value: {{ .Values.env.FROM_EMAIL_ADDRESS }}
+        - name: MODE
+          value: AKS
+        - name: O365_APP_CLIENT_ID
+          value: {{ .Values.env.O365_APP_CLIENT_ID }}
+        - name: O365_APP_SECRET_ID
+          value: {{ .Values.env.O365_APP_SECRET_ID }}
+        - name: O365_APP_TENANT_ID
+          value: {{ .Values.env.O365_APP_TENANT_ID }}
+        - name: PAGE_LOAD_WAIT_TIME
+          value: '15000'
+        - name: PUPPETEER_PAGE_THRESHOLD
+          value: '15'
+        - name: REDIS_HOST
+          value: {{ .Values.env.REDIS_HOST }}
+        - name: REDIS_KEY_PREFIX
+          value: turing
+        - name: REDIS_PASSWORD
+          value: {{ .Values.env.REDIS_PASSWORD }}
+        - name: REDIS_PORT
+          value: "{{ .Values.env.REDIS_PORT }}"
+        - name: REDIS_TLS_ENABLED
+          value: {{ .Values.env.REDIS_TLS_ENABLED }}
+        - name: SMTP_API_KEY
+          value: {{ .Values.env.SMTP_API_KEY }}
+        - name: SMTP_HOST
+          value: {{ .Values.env.SMTP_HOST }}
+        - name: SMTP_PORT
+          value: "{{ .Values.env.SMTP_PORT }}"
+        - name: SMTP_SERVICE
+          value: custom
+        - name: SMTP_USERNAME
+          value: {{ .Values.env.SMTP_USERNAME }}
+        - name: SUPPORTED_VISUAL_GUID
+          value: 2B7A5FD2992D434DAE0B149479307B7B
+        - name: VALIDATE_REPORT_WAIT_TIME
+          value: '35000'
+        - name: WORKER_QUEUE_NAME
+          value: turing:email-notification
+        - name: CRON_CONTAINER_IMAGE
+          value: "{{ .Values.image.repository }}/turing-worker:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        - name: ORCHESTRATOR_WRITEBACK_WORKER_CONTAINER_IMAGE
+          value: "{{ .Values.image.repository }}/turing-writeback-worker:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.image.repository }}/turing-api:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: Always
+        name: {{ include "inforiver.name" . }}-api
+        ports:
+        - containerPort: {{ .Values.ports.containerPort }}
+        resources:
+          limits:
+            cpu: 250m
+            memory: 1Gi
+          requests:
+            cpu: 100m
+            memory: 512Mi
+      imagePullSecrets:
+      - name: {{ include "inforiver.name" . }}-docker-secret
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30

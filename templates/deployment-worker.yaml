@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "inforiver.name" . }}-audit
+  name: {{ include "inforiver.name" . }}-worker
   namespace: {{ include "inforiver.name" . }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: "{{ include "inforiver.name" . }}-app"
+      app: {{ include "inforiver.name" . }}-app
   strategy:
     rollingUpdate:
       maxSurge: 25%
@@ -22,9 +22,9 @@ spec:
       - env:
         - name: ADMIN_PORTAL_URL
           value: {{ .Values.env.ADMIN_PORTAL_URL }}
-        image: "{{ .Values.image.repository }}/turing-audit:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        image: "{{ .Values.image.repository }}/turing-worker:{{ .Values.image.tag | default .Chart.AppVersion }}"
         imagePullPolicy: Always
-        name: {{ include "inforiver.name" . }}-audit
+        name: {{ include "inforiver.name" . }}-worker
         resources:
           limits:
             cpu: 250m
