@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: {{ include "inforiver.name" . }}-api-service
+  namespace: {{ include "inforiver.name" . }}
 spec:
   selector:
     app: {{ include "inforiver.name" . }}-app

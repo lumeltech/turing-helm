@@ -20,6 +20,8 @@ spec:
     spec:
       containers:
       - env:
+        - name: PORT
+          value: "{{ .Values.ports.containerPort }}"
         - name: ADMIN_PORTAL_URL
           value: {{ .Values.env.ADMIN_PORTAL_URL }}
         - name: CLOUD_SERVICE_PROVIDER
@@ -52,8 +54,6 @@ spec:
           value: turing:comment-immediate
         - name: CUSTOM_COLUMN_BULK_UPDATE_LIMIT
           value: '2000'
-        - name: DB_ENCRYPT
-          value: {{ .Values.env.DB_ENCRYPT }}
         - name: DB_HOST
           value: {{ .Values.env.DB_HOST }}
         - name: DB_NAME
