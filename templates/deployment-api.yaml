@@ -89,11 +89,11 @@ spec:
         - name: REDIS_KEY_PREFIX
           value: turing
         - name: REDIS_PASSWORD
-          value: {{ .Values.env.REDIS_PASSWORD }}
+          value: "{{ .Values.env.REDIS_PASSWORD }}"
         - name: REDIS_PORT
           value: "{{ .Values.env.REDIS_PORT }}"
         - name: REDIS_TLS_ENABLED
-          value: {{ .Values.env.REDIS_TLS_ENABLED }}
+          value: "{{ .Values.env.REDIS_TLS_ENABLED }}"
         - name: SMTP_API_KEY
           value: {{ .Values.env.SMTP_API_KEY }}
         - name: SMTP_HOST
