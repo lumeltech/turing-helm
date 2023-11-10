@@ -19,29 +19,23 @@ spec:
         app: {{ include "inforiver.name" . }}-app
     spec:
       containers:
-      - env:
-        - name: PORT
-          value: "{{ .Values.ports.containerPort }}"
+      - env:        
         - name: ADMIN_PORTAL_URL
           value: {{ .Values.env.ADMIN_PORTAL_URL }}
-        - name: CLOUD_SERVICE_PROVIDER
-          value: aws
-        - name: BLOB_ACCOUNT_KEY
-          value: {{ .Values.env.BLOB_ACCOUNT_KEY }}
-        - name: BLOB_ACCOUNT_NAME
-          value: {{ .Values.env.BLOB_ACCOUNT_NAME }}
+        - name: APP_HOST
+          value: {{ .Values.env.APP_HOST }}
+        - name: APP_LOGO
+          value: "https://turing-staging.inforiver.com/public/img/inforiver_logo.png"
+        - name: APP_NAME
+          value: Inforiver
+        - name: APP_PORT
+          value: "443"
         - name: AWS_REGION
-          value: {{ .Values.env.AWS_REGION }}
+          value: {{ .Values.env.AWS_REGION }} 
         - name: BLOB_CONTAINER_NAME
-          value: inforiver
-        - name: BLOB_CUSTOM_COLUMN_CONTAINER_NAME
-          value: inforiver-custom-column
-        - name: BLOB_WRITEBACK_DATA_CONTAINER_NAME
-          value: inforiver-writeback-data
-        - name: BLOB_WRITEBACK_JOBMETA_CONTAINER_NAME
-          value: inforiver-writeback-jobmeta
+          value: {{ .Values.env.BLOB_CONTAINER_NAME}}        
         - name: BOOTSTRAP_ON_PREMISE
-          value: 'true'
+          value: "true"
         - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_ADMIN
           value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_ADMIN }}
         - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_DOMAIN
@@ -49,29 +43,63 @@ spec:
         - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_LICENSE
           value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_LICENSE }}
         - name: BOOTSTRAP_ON_PREMISE_WORKSPACE_NAME
-          value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_NAME }}
+          value: {{ .Values.env.BOOTSTRAP_ON_PREMISE_WORKSPACE_NAME }}  
+        - name: CLOUD_SERVICE_PROVIDER
+          value: aws                    
         - name: COMMENTWORKER_QUEUE_NAME
           value: turing:comment-immediate
+        - name: CRON_AKS_POD_TTL
+          value: "16000"        
         - name: CUSTOM_COLUMN_BULK_UPDATE_LIMIT
           value: '2000'
+        - name: CRON_CONTAINER_IMAGE
+          value: {{ .Values.image.repository }}/turing-worker:{{ .Values.image.tag | default .Chart.AppVersion }}
+        - name: CRON_EMBED_FUNCTION_THRESHOLD
+          value: '55000'
+        - name: CRON_PAGE_LOAD_VALIDATE_WAIT_TIME
+          value: '50000'  
+        - name: DB_ENCRYPT
+          value: "true"
         - name: DB_HOST
-          value: {{ .Values.env.DB_HOST }}
+          value: {{ .Values.env.DB_HOST }}    
         - name: DB_NAME
           value: {{ .Values.env.DB_NAME }}
         - name: DB_PASS
           value: {{ .Values.env.DB_PASS }}
         - name: DB_PORT
-          value: "{{ .Values.env.DB_PORT }}"
+          value: "1433"
         - name: DB_SCHEMA
-          value: {{ .Values.env.DB_SCHEMA }}
+          value: dbo
         - name: DB_TYPE
           value: mssql
         - name: DB_USER
           value: {{ .Values.env.DB_USER }}
+        - name: DiagnosticServices_EXTENSION_VERSION
+          value: ~3
+        - name: DOCKER_ENABLE_CI
+          value: "true"
+        - name: DOCKER_REGISTRY_SERVER_PASSWORD
+          value: {{ .Values.env.DOCKER_REGISTRY_SERVER_PASSWORD}}
+        - name: DOCKER_REGISTRY_SERVER_URL
+          value: "https://turing.azurecr.io"
+        - name: DOCKER_REGISTRY_SERVER_USERNAME
+          value: turing
         - name: ENABLE_AUDIT
-          value: '1'
-        - name: FROM_EMAIL_ADDRESS
-          value: {{ .Values.env.FROM_EMAIL_ADDRESS }}
+          value: "1"
+        - name: GET_JOB_USAGE_REPORT
+          value: "0"
+        - name: GOOGLE_APP_CLIENT_ID
+          value: {{ .Values.env.GOOGLE_APP_CLIENT_ID}}
+        - name: GOOGLE_APP_SECRET_ID
+          value: {{ .Values.env.GOOGLE_APP_SECRET_ID}}
+        - name: InstrumentationEngine_EXTENSION_VERSION
+          value: "disabled"   
+        - name: IS_TEST
+          value: "2"       
+        - name: LINKEDIN_APP_CLIENT_ID
+          value: {{ .Values.env.LINKEDIN_APP_CLIENT_ID}}
+        - name: LINKEDIN_APP_SECRET_ID
+          value: {{ .Values.env.LINKEDIN_APP_SECRET_ID}}
         - name: MODE
           value: AKS
         - name: O365_APP_CLIENT_ID
@@ -80,20 +108,41 @@ spec:
           value: {{ .Values.env.O365_APP_SECRET_ID }}
         - name: O365_APP_TENANT_ID
           value: {{ .Values.env.O365_APP_TENANT_ID }}
+        - name: ORCHESTRATOR_AKS_CPU_LIMIT
+          value: 2000m
+        - name: ORCHESTRATOR_AKS_CPU_REQUEST
+          value: 1000m
+        - name: ORCHESTRATOR_AKS_MEMORY_THRESHOLDS
+          value: |
+            {"0-100000":{"memoryLimit":"3096Mi","memoryRequest":"1024Mi"},"100001-200000":{"memoryLimit":"4096Mi","memoryRequest":"2048Mi"},"200001-400000":{"memoryLimit":"5096Mi","memoryRequest":"3096Mi"},"400001-2000000":{"memoryLimit":"6096Mi","memoryRequest":"4096Mi"}}
+        - name: ORCHESTRATOR_AKS_POD_TTL
+          value: "16000"
+        - name: ORCHESTRATOR_APPSOURCE_TENANT_CRON_JOB_ENABLE
+          value: "0"
+        - name: ORCHESTRATOR_RETENTION_CONTROLS_ENABLED
+          value: "1"
+        - name: ORCHESTRATOR_VISUAL_WORKER_CONTAINER_IMAGE
+          value: {{ .Values.image.repository }}/turing-visual-worker:{{ .Values.image.tag | default .Chart.AppVersion }}
+        - name: ORCHESTRATOR_WRITEBACK_WORKER_CONTAINER_IMAGE
+          value: {{ .Values.image.repository }}/turing-writeback-worker:{{ .Values.image.tag | default .Chart.AppVersion }}
         - name: PAGE_LOAD_WAIT_TIME
-          value: '15000'
-        - name: PUPPETEER_PAGE_THRESHOLD
-          value: '15'
+          value: "95000"
+        - name: PORT
+          value: "{{ .Values.ports.containerPort }}"
+        - name: PREVIEW_ZIP_SIZE_LIMIT_IN_MB
+          value: "1"
+        - name: PROTOCOL
+          value: https
+        - name: PUBKEY_64
+          value: {{ .Values.env.PUBKEY_64 }}  
         - name: REDIS_HOST
-          value: {{ .Values.env.REDIS_HOST }}
-        - name: REDIS_KEY_PREFIX
-          value: turing
+          value: {{ .Values.env.REDIS_HOST }}        
         - name: REDIS_PASSWORD
           value: "{{ .Values.env.REDIS_PASSWORD }}"
         - name: REDIS_PORT
           value: "{{ .Values.env.REDIS_PORT }}"
         - name: REDIS_TLS_ENABLED
-          value: "{{ .Values.env.REDIS_TLS_ENABLED }}"
+          value: "1"
         - name: SMTP_API_KEY
           value: {{ .Values.env.SMTP_API_KEY }}
         - name: SMTP_HOST
@@ -101,31 +150,55 @@ spec:
         - name: SMTP_PORT
           value: "{{ .Values.env.SMTP_PORT }}"
         - name: SMTP_SERVICE
-          value: custom
+          value: "{{ .Values.env.SMTP_SERVICE }}"
         - name: SMTP_USERNAME
           value: {{ .Values.env.SMTP_USERNAME }}
+        - name: SMTP_TLS_ENABLED
+          value: "0"
+        - name: SnapshotDebugger_EXTENSION_VERSION
+          value: disabled            
         - name: SUPPORTED_VISUAL_GUID
           value: 2B7A5FD2992D434DAE0B149479307B7B
-        - name: VALIDATE_REPORT_WAIT_TIME
-          value: '35000'
+        - name: TEMPLATE_CLIENT_PORT
+          value: 443/staging
+        - name: TEMPLATE_CLIENT_PROTOCOL
+          value: https 
+        - name: TWITTER_APP_CLIENT_ID
+          value: {{ .Values.env.TWITTER_APP_CLIENT_ID }}
+        - name: TWITTER_APP_SECRET_ID
+          value: {{ .Values.env.TWITTER_APP_SECRET_ID }}
+        - name: WEBHOOK_KEY
+          value: {{ .Values.env.WEBHOOK_KEY }}
+        - name: WEBSITE_DNS_SERVER
+          value: 168.63.129.16
+        - name: WEBSITE_HTTPLOGGING_RETENTION_DAYS
+          value: "10"
+        - name: WEBSITE_VNET_ROUTE_ALL
+          value: "1"
+        - name: WEBSITES_ENABLE_APP_SERVICE_STORAGE
+          value: "false"
         - name: WORKER_QUEUE_NAME
           value: turing:email-notification
-        - name: CRON_CONTAINER_IMAGE
-          value: "{{ .Values.image.repository }}/turing-worker:{{ .Values.image.tag | default .Chart.AppVersion }}"
-        - name: ORCHESTRATOR_WRITEBACK_WORKER_CONTAINER_IMAGE
-          value: "{{ .Values.image.repository }}/turing-writeback-worker:{{ .Values.image.tag | default .Chart.AppVersion }}"
-        image: "{{ .Values.image.repository }}/turing-api:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        - name: WRITEBACK_PAYLOAD_AKS_THRESHOLD
+          value: "300000"
+        - name: XDT_MicrosoftApplicationInsights_BaseExtensions
+          value: disabled
+        - name: XDT_MicrosoftApplicationInsights_Mode
+          value: recommended                        
+        - name: XDT_MicrosoftApplicationInsights_PreemptSdk
+          value: disabled                      
+        image: {{ .Values.image.repository }}/turing-api:{{ .Values.image.tag | default .Chart.AppVersion }}
         imagePullPolicy: Always
         name: {{ include "inforiver.name" . }}-api
         ports:
         - containerPort: {{ .Values.ports.containerPort }}
         resources:
           limits:
-            cpu: 250m
-            memory: 1Gi
+            cpu: 3000m
+            memory: 3Gi
           requests:
-            cpu: 100m
-            memory: 512Mi
+            cpu: 2500m
+            memory: 2Gi
       imagePullSecrets:
       - name: {{ include "inforiver.name" . }}-docker-secret
       restartPolicy: Always
